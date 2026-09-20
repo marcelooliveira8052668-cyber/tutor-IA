@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' file: data:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data:; connect-src 'self' https://generativelanguage.googleapis.com; media-src 'self' blob: file: data:; font-src 'self' file:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Lina — Tutor de Inglês com IA</title>
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ===== TOPO ===== -->
+  <header id="topo">
+    <div id="marca"><span id="marcaEmoji">&#128105;&#8205;&#127979;</span> Lina <b>BETA</b></div>
+    <div class="topoDir">
+      <span class="badge" id="nivelBadge" title="Nível atual">A1</span>
+      <span class="badge" id="streakBadge" title="Dias seguidos">&#128293; <span id="streakVal">0</span></span>
+      <span class="badge" id="xpBadge" title="Pontos de aprendizado">&#11088; <span id="xpVal">0</span></span>
+      <button class="btnIcone" id="btnPainel" type="button" title="Cenários e aulas">&#128218;</button>
+      <button class="btnIcone" id="btnTema" type="button" title="Tema claro/escuro">&#9788;</button>
+      <button class="btnIcone" id="btnConfig" type="button" title="Configurações">&#9881;</button>
+    </div>
+  </header>
+  <div id="barraNivel"><div id="barraNivelPre"><span id="barraNivelRot"></span></div></div>
+
+  <!-- ===== CHAT ===== -->
+  <main id="chat">
+    <div id="msgs"></div>
+    <div id="digBar">
+      <div class="inputLinha">
+        <select id="micLang" title="Idioma do microfone (o que você vai falar)">
+          <option value="pt-BR">&#127463;&#127479; PT</option>
+          <option value="en-US" selected>&#127482;&#127480; EN</option>
+        </select>
+        <button class="btnMic" id="btnMic" type="button" title="Falar (use microfone)">&#127908;</button>
+        <input id="entrada" type="text" autocomplete="off" placeholder="Escreva em português ou inglês...">
+        <button class="btnEnviar" id="btnEnviar" type="button" title="Enviar">&#10148;</button>
+      </div>
+      <div id="chipsLinha"><span class="rotuloChip" id="modoRotulo">&#128218; Aula</span><div id="chips"></div></div>
+    </div>
+  </main>
+
+  <!-- ===== PAINEL DA LINA ===== -->
+  <aside id="painel">
+    <div class="painelTopo">
+      <span id="linaFace">&#128105;&#8205;&#127979;</span>
+      <div><b>Lina</b><br><small id="linaEspecialidade">sua tutora pessoal</small></div>
+      <button class="btnIcone" id="btnFechaPainel" type="button" title="Fechar">&#10005;</button>
+    </div>
+    <div class="painelCalc">
+      <div class="nivelAtual">Nível: <b id="pnivel">A1</b></div>
+      <button class="btnG" id="btnImersao" type="button">Mergulho total &#128218;</button>
+      <button class="btnG" id="btnSairCena" type="button" hidden>&#9940; Sair da cena</button>
+    </div>
+    <div class="rotuloSecao">Cenários de conversa</div>
+    <div id="listaCenas" class="listaCenas"></div>
+    <div class="rotuloSecao">Temas de aula rápida</div>
+    <div id="listaTemas" class="listaCenas"></div>
+    <div class="rotuloSecao">Seu vocabulário (<span id="palCont">0</span>)</div>
+    <div id="listaPalavras" class="listaPalavras"></div>
+  </aside>
+
+  <!-- ===== MODAL CONFIG ===== -->
+  <div id="overlayConfig" hidden>
+    <div id="modalConfig">
+      <h2>&#9881; Configurações</h2>
+
+      <label class="campo">
+        <span>Chave da API do Google (Gemini) — grátis</span>
+        <input id="cfgChave" type="password" placeholder="Cole aqui a chave (AIza... ou AQ...)" autocomplete="off">
+        <small>Consiga grátis em <b>aistudio.google.com/apikey</b>. A chave fica só neste navegador. Sem chave, a Lina funciona em modo básico.</small>
+      </label>
+
+      <label class="campo">
+        <span>Modelo Gemini</span>
+        <input id="cfgModelo" type="text" placeholder="gemini-3.5-flash">
+        <small>Escolha na lista de modelos em ai.google.dev/gemini-api/docs/models</small>
+      </label>
+
+      <div class="linhaBtns">
+        <button class="btnG" id="btnSalvarCfg" type="button">&#10003; Salvar</button>
+        <button class="btnG meio" id="btnTestarChave" type="button">&#128268; Testar chave</button>
+        <button class="btnG meio" id="btnLimparChat" type="button">&#128259; Limpar conversa</button>
+        <button class="btnG perigo" id="btnZerar" type="button">&#128465; Zerar tudo</button>
+      </div>
+
+      <div id="cfgStatus" class="cfgStatus"></div>
+      <button class="btnFechar" id="btnFechaCfg" type="button">Fechar</button>
+    </div>
+  </div>
+
+  <!-- ===== MODAL SETUP (primeira vez) ===== -->
+  <div id="overlaySetup" hidden>
+    <div id="modalSetup">
+      <div id="linaSetupFace">&#128105;&#8205;&#127979;</div>
+      <h2>Oi! Eu sou a <b>Lina</b></h2>
+      <p id="setupIntro">Suas aulas particulares de inglês, do zero à fluência — falando como nativos falam. Deixa eu te conhecer para ensinar do seu jeito.</p>
+
+      <label class="campo">
+        <span>Como você se chama?</span>
+        <input id="setNome" type="text" placeholder="Seu nome" maxlength="24">
+      </label>
+
+      <div class="rotuloSecao">Seu nível hoje</div>
+      <div id="setNiveis" class="selGrade"></div>
+
+      <div class="rotuloSecao">Onde você vai usar o inglês?</div>
+      <div id="setMetas" class="selGrade selGradeMetas"></div>
+
+      <button class="btnG grande" id="btnIniciar" type="button">Vamos começar! &#128640;</button>
+      <small id="setupObs">Dica: para conversar de verdade com a Lina, cole sua chave grátis em Configurações (&#9881;). Sem chave, ela ainda te ensina em modo básico.</small>
+    </div>
+  </div>
+
+  <!-- ===== AVISOS ===== -->
+  <div id="toast" hidden></div>
+  <div id="pulsando" hidden>
+    <div class="decor"></div>
+    <span>Lina está pensando...</span>
+  </div>
+</div>
+
+<script src="js/conversas.js"></script>
+<script src="js/chave.js"></script>
+<script src="js/ia.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

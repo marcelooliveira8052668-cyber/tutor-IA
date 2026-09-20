@@ -1,0 +1,274 @@
+/* =============================================================
+   Lina — Tutor de Inglês IA (estilo.css)
+   ============================================================= */
+:root {
+  --fundo: #f4f6fb;
+  --fundo2: #ffffff;
+  --fundo3: #eef1f8;
+  --texto: #1c2434;
+  --texto2: #5b667a;
+  --linha: #e3e7f0;
+  --acento: #1aa85c;
+  --acento2: #0e7a42;
+  --bolhaEu: #e0f5e9;
+  --bolhaLina: #ffffff;
+  --borda: 12px;
+  --sombra: 0 4px 18px rgba(20, 30, 60, .08);
+}
+[data-tema="escuro"] {
+  --fundo: #10141d;
+  --fundo2: #1a2030;
+  --fundo3: #232b3f;
+  --texto: #e8ecf5;
+  --texto2: #9aa6bd;
+  --linha: #2c3550;
+  --bolhaEu: #1d3a2c;
+  --bolhaLina: #1c2333;
+  --sombra: 0 4px 18px rgba(0, 0, 0, .5);
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  background: var(--fundo);
+  color: var(--texto);
+  display: flex;
+  justify-content: center;
+}
+
+#app {
+  max-width: 980px;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--fundo);
+}
+
+/* ---------- TOPO ---------- */
+#topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--fundo2);
+  border-bottom: 1px solid var(--linha);
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+#marca { font-size: 18px; letter-spacing: .4px; }
+#marca b { color: var(--acento); font-size: 12px; vertical-align: middle; margin-left: 4px; background: var(--fundo3); padding: 2px 7px; border-radius: 20px; }
+.topoDir { display: flex; align-items: center; gap: 6px; }
+.badge {
+  font-size: 12px; font-weight: 700; color: var(--texto2);
+  background: var(--fundo3); padding: 5px 9px; border-radius: 20px; white-space: nowrap;
+}
+.btnIcone {
+  border: 1px solid var(--linha); background: var(--fundo2); color: var(--texto);
+  width: 36px; height: 36px; border-radius: 10px; font-size: 16px; cursor: pointer;
+}
+.btnIcone:hover { background: var(--fundo3); }
+
+#barraNivel { height: 6px; background: var(--fundo3); }
+#barraNivelPre {
+  height: 100%; width: 0%; background: linear-gradient(90deg, var(--acento), #37c47a);
+  transition: width .5s ease; border-radius: 0 4px 4px 0; position: relative;
+}
+#barraNivelRot {
+  position: absolute; right: 6px; top: -14px; font-size: 10px; color: var(--acento2); font-weight: 700; white-space: nowrap;
+}
+
+/* ---------- AVATAR LINA ---------- */
+#linaSetupFace { text-align: center; font-size: 64px; line-height: 1; }
+#linaFace { font-size: 34px; line-height: 1; }
+
+/* ---------- CHAT ---------- */
+#chat { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+#msgs {
+  flex: 1; overflow-y: auto; padding: 18px 14px 8px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.msg { display: flex; gap: 9px; max-width: 88%; }
+.msg.eu { align-self: flex-end; flex-direction: row-reverse; }
+.msgAvatar {
+  width: 38px; height: 38px; border-radius: 50%; background: var(--fundo3);
+  display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+  border: 1px solid var(--linha);
+}
+.msg.eu .msgAvatar { background: var(--bolhaEu); }
+.bolha {
+  background: var(--bolhaLina); border: 1px solid var(--linha); border-radius: var(--borda);
+  padding: 10px 12px; font-size: 15px; line-height: 1.5; overflow-wrap: break-word;
+  box-shadow: var(--sombra);
+}
+.msg.eu .bolha { background: var(--bolhaEu); border-color: transparent; }
+.bolha .fonte { display: block; font-size: 12px; color: var(--texto2); margin-bottom: 2px; }
+.bolha p { margin: 4px 0; white-space: pre-wrap; }
+.bolha pre {
+  margin: 6px 0; padding: 8px 10px; background: var(--fundo3); border-radius: 8px;
+  font-family: inherit; font-size: 14px; white-space: pre-wrap; overflow-x: auto;
+}
+.bolhaAcoes { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.btnMin {
+  border: 1px solid var(--linha); background: var(--fundo2); color: var(--texto);
+  border-radius: 20px; padding: 5px 11px; font-size: 12.5px; cursor: pointer;
+}
+.btnMin:hover { background: var(--fundo3); }
+.btnSave { border-color: transparent; background: var(--acento); color: #fff; }
+.btnSave:hover { background: var(--acento2); }
+.msgInfo { font-size: 11px; color: var(--texto2); margin-top: 4px; }
+
+/* indicador de digitação */
+.digit { display: inline-flex; gap: 4px; padding: 6px 2px; }
+.digit i { width: 7px; height: 7px; background: var(--texto2); border-radius: 50%; animation: pulso 1.2s infinite; }
+.digit i:nth-child(2) { animation-delay: .2s; }
+.digit i:nth-child(3) { animation-delay: .4s; }
+@keyframes pulso { 0%,100%{opacity:.25; transform:translateY(0)} 50%{opacity:1; transform:translateY(-3px)} }
+
+/* ---------- BARRA DE DIGITAR ---------- */
+#digBar {
+  padding: 8px 12px 10px; background: var(--fundo2); border-top: 1px solid var(--linha);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.inputLinha { display: flex; align-items: center; gap: 7px; }
+#micLang, #entrada, .btnMic, .btnEnviar { height: 44px; border-radius: 12px; font-size: 15px; }
+#micLang { border: 1px solid var(--linha); background: var(--fundo2); color: var(--texto); padding: 0 6px; cursor: pointer; }
+#entrada {
+  flex: 1; border: 1px solid var(--linha); background: var(--fundo); color: var(--texto);
+  padding: 0 14px; outline: none; min-width: 0;
+}
+#entrada:focus { border-color: var(--acento); }
+.btnMic, .btnEnviar { border: none; cursor: pointer; width: 46px; padding: 0; color: #fff; background: var(--acento); font-size: 18px; flex-shrink: 0; }
+.btnMic { background: var(--fundo3); color: var(--texto); border: 1px solid var(--linha); }
+.btnMic.gravando { animation: brilho 1s infinite; }
+@keyframes brilho { 0%,100%{ box-shadow: 0 0 0 0 rgba(234,67,53,.5);} 50%{ box-shadow: 0 0 0 8px rgba(234,67,53,.12);} background:#ea4335; color:#fff; }
+
+/* chips de aulas/cenários */
+#chipsLinha { display: flex; gap: 6px; align-items: center; overflow-x: auto; }
+.rotuloChip { font-size: 12px; font-weight: 700; color: var(--texto2); white-space: nowrap; }
+#chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+#chips::-webkit-scrollbar { display: none; }
+.chip {
+  border: 1px solid var(--linha); background: var(--fundo); color: var(--texto);
+  border-radius: 20px; padding: 6px 12px; font-size: 12.5px; cursor: pointer; white-space: nowrap;
+}
+.chip:hover { border-color: var(--acento); }
+.chip.ativo { background: var(--acento); border-color: var(--acento); color: #fff; }
+
+/* ---------- PAINEL LATERAL ---------- */
+#painel {
+  width: 100%; max-width: 320px; background: var(--fundo2); border-left: 1px solid var(--linha);
+  padding: 14px; overflow-y: auto; display: none;
+}
+@media (min-width: 860px) { #app { flex-direction: row; } #chat { order: 2; } #painel { display: block; order: 3; } #msgs { padding-left: 20px; } }
+.painelTopo { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.painelTopo b { font-size: 17px; }
+.painelTopo small { color: var(--texto2); }
+.painelTopo .btnIcone { margin-left: auto; }
+.painelCalc { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; align-items: center; }
+.nivelAtual { font-size: 13px; color: var(--texto2); }
+.nivelAtual b { color: var(--acento); font-size: 16px; }
+.btnG {
+  border: 1px solid var(--linha); background: var(--fundo2); color: var(--texto);
+  border-radius: 10px; padding: 9px 14px; font-size: 14px; cursor: pointer; flex: 1;
+}
+.btnG:hover { background: var(--fundo3); }
+.btnG.grande { font-size: 16px; padding: 13px; border-color: var(--acento); background: var(--acento); color: #fff; }
+.btnG.grande:hover { background: var(--acento2); }
+.btnG.meio { flex: 0 1 auto; }
+.btnG.perigo { color: #d93025; border-color: #f3c0bd; }
+.rotuloSecao { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--texto2); margin: 14px 0 7px; }
+.listaCenas { display: flex; flex-direction: column; gap: 7px; }
+.cenaBtn {
+  display: flex; align-items: center; gap: 9px; text-align: left; cursor: pointer;
+  border: 1px solid var(--linha); background: var(--fundo); color: var(--texto);
+  border-radius: 10px; padding: 9px 11px; font-size: 13.5px;
+}
+.cenaBtn:hover { border-color: var(--acento); }
+.cenaBtn .cemoji { font-size: 20px; }
+.cenaBtn .clv { margin-left: auto; font-size: 11px; color: var(--texto2); font-weight: 700; }
+.cenaBtn.ativo { border-color: var(--acento); background: var(--bolhaEu); }
+.listaPalavras { display: flex; flex-wrap: wrap; gap: 6px; }
+.pal {
+  background: var(--fundo3); border: 1px solid var(--linha); border-radius: 16px;
+  padding: 4px 10px; font-size: 12.5px; display: flex; align-items: center; gap: 5px;
+  color: var(--acento2); font-weight: 600;
+}
+.pal button { border: none; background: none; color: var(--texto2); cursor: pointer; font-size: 12px; padding: 0; }
+
+/* ---------- MODAIS ---------- */
+#overlayConfig, #overlaySetup {
+  position: fixed; inset: 0; background: rgba(8, 12, 22, .55);
+  display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px;
+}
+#modalConfig, #modalSetup {
+  background: var(--fundo2); border: 1px solid var(--linha); border-radius: 18px;
+  max-width: 460px; width: 100%; padding: 22px; box-shadow: var(--sombra);
+  max-height: 92vh; overflow-y: auto;
+}
+#modalSetup { text-align: center; }
+#modalConfig h2, #modalSetup h2 { margin: 6px 0 14px; font-size: 20px; }
+#modalSetup p { color: var(--texto2); font-size: 14px; line-height: 1.5; }
+.campo { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; text-align: left; }
+.campo span { font-size: 13.5px; font-weight: 600; }
+.campo input {
+  border: 1px solid var(--linha); background: var(--fundo); color: var(--texto);
+  border-radius: 10px; padding: 11px 12px; font-size: 15px; outline: none;
+}
+.campo input:focus { border-color: var(--acento); }
+.campo small { font-size: 12px; color: var(--texto2); line-height: 1.45; }
+.linhaBtns { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 4px; }
+.cfgStatus {
+  border-radius: 10px; padding: 10px 12px; font-size: 13px; margin-top: 10px; text-align: left; line-height: 1.4;
+  background: var(--fundo3); color: var(--texto2);
+}
+.cfgStatus.ok { background: #e2f6ea; color: var(--acento2); }
+.cfgStatus.erro { background: #fdeceb; color: #d93025; }
+.btnFechar {
+  width: 100%; margin-top: 10px; padding: 10px; border: none; background: none;
+  color: var(--texto2); font-size: 14px; cursor: pointer;
+}
+.btnFechar:hover { color: var(--texto); }
+
+/* grade de seleção (nível / metas) */
+.selGrade { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.opcao {
+  border: 1.5px solid var(--linha); background: var(--fundo); color: var(--texto);
+  border-radius: 12px; padding: 10px 13px; font-size: 13.5px; cursor: pointer;
+  text-align: center; line-height: 1.3; min-width: 96px;
+}
+.opcao small { display: block; font-size: 11px; color: var(--texto2); margin-top: 3px; }
+.opcao.selecionada { border-color: var(--acento); background: var(--bolhaEu); font-weight: 700; }
+#setupObs { display: block; margin-top: 12px; font-size: 12px; color: var(--texto2); line-height: 1.45; }
+
+/* ---------- TOAST / PULSANDO ---------- */
+#toast {
+  position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+  background: var(--texto); color: var(--fundo); padding: 11px 18px; border-radius: 30px;
+  font-size: 14px; z-index: 60; box-shadow: var(--sombra);
+}
+#pulsando {
+  position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%);
+  background: var(--fundo2); border: 1px solid var(--linha); border-radius: 30px;
+  padding: 10px 18px; font-size: 13.5px; z-index: 40; display: flex; align-items: center; gap: 8px;
+  box-shadow: var(--sombra);
+}
+.decor { width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid var(--acento); border-top-color: transparent; animation: gira .7s linear infinite; }
+@keyframes gira { to { transform: rotate(360deg); } }
+
+/* mensagens do sistema (ex.: cena iniciada) */
+.msg.sistema { align-self: center; max-width: 95%; }
+.msg.sistema .bolha {
+  background: var(--fundo3); border-style: dashed; font-size: 13px; color: var(--texto2); text-align: center;
+}
+
+@media (max-width: 859px) {
+  #painel { position: fixed; inset: 0 0 0 auto; z-index: 45; box-shadow: var(--sombra); }
+  #painel.aberto { display: block; }
+  #msgs { padding-bottom: 20px; }
+}
