@@ -38,12 +38,16 @@
         <input id="entrada" type="text" autocomplete="off" placeholder="Escreva em português ou inglês...">
         <button class="btnEnviar" id="btnEnviar" type="button" title="Enviar">&#10148;</button>
       </div>
-      <div id="chipsLinha"><span class="rotuloChip" id="modoRotulo">&#128218; Aula</span><div id="chips"></div></div>
+      <div id="chipsLinha"><button class="rotuloChip" id="modoRotulo" type="button" title="Modo atual">&#9999;&#65039; Aula</button><div id="chips"></div></div>
     </div>
   </main>
 
   <!-- ===== PAINEL DA LINA ===== -->
   <aside id="painel">
+    <button id="avisoIA" type="button" class="avisoIA" hidden>
+      <b>&#128268; Ativar IA de verdade</b>
+      <small>Cole sua chave grátis aqui (1 min por aparelho)</small>
+    </button>
     <div class="painelTopo">
       <span id="linaFace">&#128105;&#8205;&#127979;</span>
       <div><b>Lina</b><br><small id="linaEspecialidade">sua tutora pessoal</small></div>

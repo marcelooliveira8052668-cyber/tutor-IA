@@ -475,6 +475,18 @@
     $("pnivel").textContent = perfil ? perfil.nivel : "A1";
     $("btnImersao").textContent = perfil && perfil.imersao ? "🌊🎧 Sair do mergulho" : "Mergulho total 🎧";
     $("btnImersao").style.fontWeight = perfil && perfil.imersao ? "700" : "400";
+
+    var rot = $("modoRotulo");
+    var av = $("avisoIA");
+    if (window.IA.temChave()) {
+      rot.textContent = "🤖 IA ativa";
+      rot.className = "rotuloChip bom";
+      av.hidden = true;
+    } else {
+      rot.textContent = "🟡 modo básico — ativar IA";
+      rot.className = "rotuloChip aviso";
+      av.hidden = false;
+    }
   }
   function niveis() { return NIVEIS; }
   function encont(lista) {
@@ -566,9 +578,10 @@
     }
     renderizarTudo();
     if (!window.IA.temChave()) {
+      adicionarSys("💡 IMPORTANTE: neste aparelho ainda estou em MODO BÁSICO (respostas prontas). Para virar uma IA de verdade, que te entende e te ensina do seu jeito, toque no botão **🔌 Ativar IA** aqui de cima (ou ⚙️) e cole sua chave grátis. Basta 1 vez por aparelho.");
       setTimeout(function () {
-        toast("💡 Cole sua chave grátis em ⚙️ Configurações para conversar livremente com a Lina!");
-      }, 1500);
+        toast("🔌 Toque em \u201cAtivar IA\u201d e cole sua chave grátis!");
+      }, 1200);
     }
   }
   function escapeNome(n) {
@@ -651,6 +664,8 @@
     });
     $("btnMic").onclick = iniciarMic;
     $("btnConfig").onclick = abrirConfig;
+    $("modoRotulo").onclick = abrirConfig;
+    $("avisoIA").onclick = abrirConfig;
     $("btnSalvarCfg").onclick = salvarConfig;
     $("btnTestarChave").onclick = testarChave;
     $("btnFechaCfg").onclick = function () { $("overlayConfig").hidden = true; };

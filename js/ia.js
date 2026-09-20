@@ -55,14 +55,22 @@
     };
 
     var res;
+    var ctrl = {};
+    if (typeof AbortController === "function") {
+      ctrl = new AbortController();
+      setTimeout(function () { try { ctrl.abort(); } catch (e) {} }, 30000);
+    }
     try {
       res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(corpo)
+        body: JSON.stringify(corpo),
+        signal: ctrl.signal || undefined
       });
     } catch (e) {
-      throw new Error("Sem conexão com a IA. Verifique sua internet (" + e.message + ").");
+      var motivo = "Sem resposta da IA. Verifique sua internet ou sua chave.";
+      if (e && e.name === "AbortError") motivo = "A IA demorou demais. Tente de novo em instantes.";
+      throw new Error(motivo);
     }
 
     if (!res.ok) {
