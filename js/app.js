@@ -296,6 +296,12 @@
   function enviar(texto, viaMic) {
     texto = String(texto || "").trim();
     if (!texto || pendente) return;
+    if (!perfil) {
+      toast("Primeiro me conta seu nome e nível 🙂");
+      mostrarSetup();
+      $("overlaySetup").hidden = false;
+      return;
+    }
     pendente = true;
     setBusy(true);
 
