@@ -74,12 +74,19 @@
     }
 
     if (!res.ok) {
-      var mensagem = "Erro " + res.status;
-      try {
-        var j = await res.json();
-        if (j && j.error && j.error.message) mensagem += " — " + j.error.message;
-      } catch (e) {}
-      throw new Error(mensagem);
+      var statusHTTP = res.status;
+      var detalhe = "";
+      try { var j = await res.json(); if (j && j.error) { detalhe = j.error.message || detalhe; } } catch (e) {}
+      if (statusHTTP === 403 && /disabled|not been used|SERVICE_DISABLED/i.test(detalhe)) {
+        throw new Error(
+          "Sua chave VALE, mas a API Gemini esta DESATIVADA neste projeto Google.\n" +
+          "Clique em https://aistudio.google.com/apikey , clique em \u201cCriar chave de API\u201d e use a nova chave.\n" +
+          "(Feito isso, cole a nova chave aqui.)"
+        );
+      }
+      var mensagem = "Erro " + statusHTTP;
+      if (detalhe) mensagem += " \u2014 " + detalhe;
+      throw new Error(mensagem.slice(0, 220));
     }
 
     var dados = await res.json();
