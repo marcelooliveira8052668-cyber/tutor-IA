@@ -272,7 +272,7 @@
     var sys = window.montarPrompt(perfil);
     var ctx = contextoIA();
     if (window.IA.temChave()) {
-      return window.IA.gemini(ctx, sys).then(function (r) {
+      return window.IA.responder(ctx, sys).then(function (r) {
         return r.texto;
       }).catch(function (err) {
         toast("⚠️ " + err.message + " (usando modo básico)");
@@ -595,44 +595,82 @@
   }
 
   /* ---------------- CONFIG ---------------- */
+  function nomeProvedor(prov) {
+    return prov === "openrouter" ? "OpenRouter" : "Gemini";
+  }
   function abrirConfig() {
     $("cfgChave").value = window.IA.getChave();
     $("cfgModelo").value = window.IA.getModelo();
+    $("cfgModeloOR").value = window.IA.getModeloOR();
     var st = $("cfgStatus");
-    if (window.IA.temChave()) {
+    if (window.IA.temServidor()) {
       st.className = "cfgStatus ok";
-      st.innerHTML = "✅ Chave configurada (começa com <b>" + window.IA.getChave().slice(0, 5) + "</b>). Modelo: <b>" + escapeHtml(window.IA.getModelo()) + "</b>. Você fala com a Lina de verdade!";
+      st.innerHTML = "🖥️ <b>Modo servidor ativo</b>: a chave de IA fica <b>protegida no servidor</b> e o app já funciona no PC, na internet e no celular. Nada para colar aqui.";
+      $("cfgCampos").hidden = true;
+      $("overlayConfig").hidden = false;
+      return;
+    }
+    $("cfgCampos").hidden = false;
+    if (window.IA.temChave()) {
+      var prov2 = window.IA.provedor() || "?";
+      st.className = "cfgStatus ok";
+      st.innerHTML = "✅ Chave configurada (começa com <b>" + escapeHtml(window.IA.getChave().slice(0, 5)) + "</b>). Provedor: <b>" + nomeProvedor(prov2) + "</b>. Você fala com a Lina de verdade!";
     } else {
       st.className = "cfgStatus";
-      st.innerHTML = "Sem chave ainda. A Lina funciona em <b>modo básico</b> (frases prontas). Para conversar de verdade, pegue sua chave grátis em <b>aistudio.google.com/apikey</b>.";
+      st.innerHTML = "Sem chave ainda. Se preferir, use o <b>modo servidor</b> (recomendado) ou cole uma chave da <b>Gemini</b> (aistudio.google.com/apikey) ou do <b>OpenRouter</b> (openrouter.ai/keys).";
     }
     $("overlayConfig").hidden = false;
   }
   function salvarConfig() {
     var chave = $("cfgChave").value.trim();
     var modelo = $("cfgModelo").value.trim();
+    var modeloOR = $("cfgModeloOR").value.trim();
     window.IA.setChave(chave);
-    window.IA.setModelo(modelo);
+    if (modelo) window.IA.setModelo(modelo);
+    if (modeloOR) window.IA.setModeloOR(modeloOR);
     toast(window.IA.temChave() ? "✅ Chave salva! Agora a Lina é de verdade." : "Chave vazia — Lina segue em modo básico.");
     abrirConfig();
   }
   function testarChave() {
+    var st = $("cfgStatus");
+    if (window.IA.temServidor()) {
+      st.className = "cfgStatus";
+      st.innerHTML = "🔌 Testando o <b>servidor</b>... aguarde.";
+      window.IA.servidor(
+        [{ role: "user", pts: "Responda apenas com a palavra OK." }],
+        "Você é um assistente de teste. Responda em uma única palavra.",
+        0
+      ).then(function (r) {
+        st.className = "cfgStatus ok";
+        st.innerHTML = "✅ <b>Servidor OK!</b> A IA respondeu: <b>" + escapeHtml(r.texto.slice(0, 60)) + "</b>.<br><br>Feche e converse comigo de verdade — funciona no PC e no celular!";
+        toast("✅ Servidor OK! Lina é IA de verdade.");
+      }).catch(function (e) {
+        st.className = "cfgStatus erro";
+        st.innerHTML = "❌ " + escapeHtml(e.message) + "<br><br>Confira se a API (função `lina`) foi publicada e se a chave foi configurada no servidor.";
+        toast("Erro ao testar o servidor.");
+      });
+      return;
+    }
     var chave = $("cfgChave").value.trim();
     window.IA.setChave(chave);
-    var st = $("cfgStatus");
+    var modelo = $("cfgModelo").value.trim();
+    var modeloOR = $("cfgModeloOR").value.trim();
+    if (modelo) window.IA.setModelo(modelo);
+    if (modeloOR) window.IA.setModeloOR(modeloOR);
+    var prov = window.IA.provedor() || "?";
     st.className = "cfgStatus";
-    st.innerHTML = "🔌 Testando conexão com a Gemini... aguarde.";
-    window.IA.gemini(
+    st.innerHTML = "🔌 Testando conexão com <b>" + nomeProvedor(prov) + "</b>... aguarde.";
+    window.IA.responder(
       [{ role: "user", pts: "Responda apenas com a palavra OK." }],
       "Você é um assistente de teste. Responda em uma única palavra.",
       0
     ).then(function (r) {
       st.className = "cfgStatus ok";
-      st.innerHTML = "✅ Chave <b>VÁLIDA</b>! A Gemini respondeu: <b>" + escapeHtml(r.texto.slice(0, 60)) + "</b>.<br><br>Agora feche esta janela e converse comigo de verdade — sem modo básico!";
+      st.innerHTML = "✅ Chave <b>VÁLIDA</b>! " + nomeProvedor(prov) + " respondeu: <b>" + escapeHtml(r.texto.slice(0, 60)) + "</b>.<br><br>Agora feche esta janela e converse comigo de verdade — sem modo básico!";
       toast("✅ Chave válida! Lina é IA de verdade agora.");
     }).catch(function (e) {
       st.className = "cfgStatus erro";
-      st.innerHTML = "❌ " + escapeHtml(e.message) + "<br><br>Confira se a chave foi copiada inteira (começa com AIza) e se o modelo <b>" + escapeHtml(window.IA.getModelo()) + "</b> existe em ai.google.dev/gemini-api/docs/models.";
+      st.innerHTML = "❌ " + escapeHtml(e.message) + "<br><br>Confira se a chave foi copiada inteira.";
       toast("Erro ao testar a chave.");
     });
   }

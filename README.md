@@ -10,22 +10,38 @@ Sua professora particular de inglês **de verdade**, do zero à fluência. A Lin
 - 📚 **Salva seu vocabulário** novo automaticamente e dá XP;
 - 📈 **Acompanha progresso**: XP, dias seguidos e nível (A1 → C2).
 
+## Onde a Lina roda (PC, internet e celular)
+
+O app é publicado no **Firebase Hosting** e conversa com uma **Cloud Function** protegendo a chave da IA no servidor:
+
+- URL do app: **https://tutor-ia-f6eca.web.app**
+- API (proxy de IA): Cloud Function `lina` no mesmo projeto
+- A chave da IA fica **no servidor** (Firebase Secret Manager) — ela **nunca** vai para o navegador.
+
 ## Como começar (2 minutos)
 
-1. **Abra o app**: dê dois cliques em `tutor-ia/index.html` ou rode um servidor local
-   (`npx serve tutor-ia` ou `python -m http.server` na pasta).
-2. **Monte seu perfil**: nome, nível atual e onde você vai usar o inglês.
-3. Cole sua chave grátis em **⚙️ Configurações** e pronto — Lina vira uma professora de verdade.
+1. **Abra o app**: rode um servidor local
+   (`npx serve tutor-ia` ou `python -m http.server` na pasta) ou publique no Firebase;
+2. **Monte seu perfil**: nome, nível atual e onde você vai usar o inglês;
+3. Pronto — em **modo servidor**, a Lina já fala com a IA sem você colar chave nenhuma.
 
-> Sem chave, a Lina funciona em **modo básico** (frases e correções prontas) para você já ir praticando.
+> Sem a API publicada/ativa, a Lina funciona em **modo básico** (frases e correções prontas).
 
-## Pegando a chave grátis (Gemini)
+## Como publicar (PC, internet e celular)
 
-1. Acesse **https://aistudio.google.com/apikey** (logado na sua conta Google);
-2. Clique em **"Create API key"**;
-3. Copie a chave (começa com `AIza...`) e cole no app em **⚙️ Configurações**.
+Requisitos: Node.js + Firebase CLI logado (`npx firebase login`) e o projeto no
+plano **Blaze** (gratuito para testar; Cloud Functions pede esse plano).
 
-A chave fica **apenas no seu navegador**. Grátis: dezenas de conversas por dia.
+1. Configure a chave da IA no servidor (uma única vez):
+   ```bash
+   echo "SK-OU-SUA-CHAVE-OPENROUTER" | npx firebase functions:secrets:set LINA_OPENROUTER_KEY --project tutor-ia-f6eca
+   ```
+   (Para Gemini, o nome do secret é `LINA_GEMINI_KEY`.)
+2. Publique a API e o app:
+   ```bash
+   npx firebase deploy --project tutor-ia-f6eca
+   ```
+3. Abra **https://tutor-ia-f6eca.web.app** no PC ou no celular.
 
 ## O que você pode fazer
 
@@ -48,9 +64,13 @@ tutor-ia/
 ├── css/estilo.css      → visual (claro/escuro, responsivo)
 └── js/
     ├── conversas.js    → persona da Lina, níveis, cenários, temas e plano B
-    ├── ia.js           → integração com a API Gemini + fallback offline
+    ├── chave.js        → config da API (`LINA_API`) e chave local opcional
+    ├── ia.js           → integração com a API (chave no servidor) + fallback
     └── app.js          → chat, voz, microfone, XP e progresso
 ```
+
+A API vive em `../functions/index.js` (Cloud Function `lina`), que chama
+Gemini/OpenRouter com a chave guardada nas secrets do Firebase.
 
 ## Dicas
 

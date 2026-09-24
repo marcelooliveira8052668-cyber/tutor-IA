@@ -235,14 +235,14 @@ window.OFFLINE = {
       linhas.push("Treina a reunião de trabalho em ➜ Cenários. Quer essa agora ou prefere outro tema?");
     } else if (f(["treino", "praticar", "pratica", "prática", "practice", "conversar", "pap"])) {
       linhas.push("Excelente! Conversa é o caminho mais rápido para a fluência. 🎯");
-      linhas.push("Para treinar comigo de verdade, cole sua chave grátis no ⚙️ Configurações (aistudio.google.com/apikey). Aí sou uma professora de verdade, do seu nível.");
+      linhas.push("Para treinar comigo de verdade, cole uma chave de IA no ⚙️ Configurações (Gemini ou OpenRouter). Aí sou uma professora de verdade, do seu nível.");
       linhas.push("Enquanto isso: me conta em inglês — **\"What's your name?\"** 🙂");
     } else if (f(["boa noite", "boanoite", "dormir", "sleep"])) {
       linhas.push("Boa noite! 🌙 Para desejar: **\"Good night! Sleep well!\"** e uma variação carinhosa: **\"See you tomorrow!\"**");
       linhas.push("★ sleep — dormir");
     } else {
       /* resposta genérica que ainda ensina */
-      linhas.push("Boa pergunta! Pra eu te responder melhor (com passei a usar a palavra certa e o jeito natural), cola sua chave grátis nas ⚙️ Configurações — aí tenho acesso total à mente de uma professora americana de verdade.");
+      linhas.push("Boa pergunta! Pra eu te responder melhor (com a palavra certa e o jeito natural), cola uma chave de IA nas ⚙️ Configurações — aí tenho acesso total à mente de uma professora americana de verdade.");
       linhas.push("Enquanto isso, anota essa: para dizer isso em inglês, uma forma útil é começar com **\"I'd like to say…\"** ou **\"Could you explain…?\"**");
       linhas.push("★ could — poderia (pedido educado)");
       linhas.push("Me conta o que você queria dizer em português? 😊");
