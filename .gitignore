@@ -1,6 +1,18 @@
-# Nunca suba a chave da API para o GitHub
-js/chave.js
+# ============================================================
+# CHAVES E SEGREDOS
+# ------------------------------------------------------------
+# A chave da IA NUNCA vai para o GitHub. Onde ela fica de verdade:
+#   1) variavel de ambiente  LINA_GEMINI_KEY / LINA_OPENROUTER_KEY
+#   2) local-secret.js        (ignorado aqui)
+#   3) Configuracoes do app   (fica no localStorage do navegador)
+#
+# O js/chave.js que fica versionado tem os valores VAZIOS de
+# proposito: ele so aponta para o endereco da API. Se voce colar
+# uma chave real nele, ela vai para o GitHub. Use o local-secret.js.
+# ============================================================
+
 local-secret.js
+js/chave.local.js
 
 # Sistema / cache
 .DS_Store
