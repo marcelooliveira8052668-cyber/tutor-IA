@@ -10,38 +10,78 @@ Sua professora particular de inglês **de verdade**, do zero à fluência. A Lin
 - 📚 **Salva seu vocabulário** novo automaticamente e dá XP;
 - 📈 **Acompanha progresso**: XP, dias seguidos e nível (A1 → C2).
 
-## Onde a Lina roda (PC, internet e celular)
+---
 
-O app é publicado no **Firebase Hosting** e conversa com uma **Cloud Function** protegendo a chave da IA no servidor:
+## Como rodar (2 minutos)
 
-- URL do app: **https://tutor-ia-f6eca.web.app**
-- API (proxy de IA): Cloud Function `lina` no mesmo projeto
-- A chave da IA fica **no servidor** (Firebase Secret Manager) — ela **nunca** vai para o navegador.
+### Opção 1 — com a IA de verdade (recomendado)
 
-## Como começar (2 minutos)
+Roda o servidor local. Ele serve o app **e** faz o proxy da IA com a chave guardada
+na sua máquina — a chave **nunca** vai para o navegador.
 
-1. **Abra o app**: rode um servidor local
-   (`npx serve tutor-ia` ou `python -m http.server` na pasta) ou publique no Firebase;
-2. **Monte seu perfil**: nome, nível atual e onde você vai usar o inglês;
-3. Pronto — em **modo servidor**, a Lina já fala com a IA sem você colar chave nenhuma.
+```bash
+node server.js
+```
 
-> Sem a API publicada/ativa, a Lina funciona em **modo básico** (frases e correções prontas).
+Depois abra **http://localhost:3000**.
 
-## Como publicar (PC, internet e celular)
+Para a Lina falar com a IA, coloque sua chave (grátis) numa destas duas formas:
 
-Requisitos: Node.js + Firebase CLI logado (`npx firebase login`) e o projeto no
-plano **Blaze** (gratuito para testar; Cloud Functions pede esse plano).
+**a) variável de ambiente**
 
-1. Configure a chave da IA no servidor (uma única vez):
+```bash
+# Windows (PowerShell)
+$env:LINA_GEMINI_KEY = "AIza..."
+
+# Mac / Linux
+export LINA_GEMINI_KEY="AIza..."
+```
+
+**b) arquivo `local-secret.js`** (crie na mesma pasta; ele fica no `.gitignore`)
+
+```js
+module.exports = {
+  LINA_GEMINI_KEY: "AIza...",
+  LINA_OPENROUTER_KEY: ""   // ou use OpenRouter: "sk-or-v1-..."
+};
+```
+
+Depois é só reiniciar o servidor.
+
+### Opção 2 — sem servidor, direto no navegador
+
+Abra o `index.html` com dois cliques. A Lina funciona no **modo básico**
+(respostas prontas, correções e cenários — tudo offline, sem internet).
+
+Se quiser a IA de verdade nesse modo, cole uma chave em **⚙️ Configurações**.
+
+---
+
+## Onde a Lina roda
+
+| Onde | Como | O que funciona |
+|------|------|----------------|
+| **PC** | `node server.js` | Tudo, com a chave protegida no servidor |
+| **Internet** | Firebase Hosting + Cloud Function | Tudo, com a chave no Secret Manager |
+| **Só abrindo o arquivo** | dois cliques no `index.html` | Modo básico (sem IA) |
+
+Para publicar na internet, o caminho mais curto é Firebase:
+
+1. Configure a chave no servidor (uma única vez):
    ```bash
-   echo "SK-OU-SUA-CHAVE-OPENROUTER" | npx firebase functions:secrets:set LINA_OPENROUTER_KEY --project tutor-ia-f6eca
+   echo "SK-OU-SUA-CHAVE-OPENROUTER" | npx firebase functions:secrets:set LINA_OPENROUTER_KEY --project SEU-PROJETO
    ```
    (Para Gemini, o nome do secret é `LINA_GEMINI_KEY`.)
-2. Publique a API e o app:
+2. Publique:
    ```bash
-   npx firebase deploy --project tutor-ia-f6eca
+   npx firebase deploy --project SEU-PROJETO
    ```
-3. Abra **https://tutor-ia-f6eca.web.app** no PC ou no celular.
+3. Abra **https://SEU-PROJETO.web.app** no PC ou no celular.
+
+O servidor local e a Cloud Function fazem o mesmo trabalho: seguram a chave e
+chamam a IA no lugar do navegador. Use o que for mais fácil para você.
+
+---
 
 ## O que você pode fazer
 
@@ -56,21 +96,36 @@ plano **Blaze** (gratuito para testar; Cloud Functions pede esse plano).
 | Seu progresso | ⭐ XP no topo + barra de evolução + dias seguidos 🔥 |
 | Vocabulário | Guardado automaticamente no painel (palavras ★) |
 
+---
+
+## Acessibilidade
+
+O app foi feito para funcionar bem com teclado e leitor de tela:
+
+- **Foco visível** em todos os botões e campos
+- **Tecla Esc** fecha as janelas de configuração e de boas-vindas
+- **O foco fica preso** dentro da janela aberta e volta para onde estava ao fechar
+- A conversa é anunciada pelo leitor de tela (`role="log"`)
+- As mensagens de aviso usam `role="status"`
+- **O zoom do celular não é bloqueado** — dá para aumentar o tamanho da letra
+
+---
+
 ## Estrutura
 
 ```
 tutor-ia/
 ├── index.html          → a página única do app
+├── server.js           → servidor local (sem dependências): serve o app e protege a chave
 ├── css/estilo.css      → visual (claro/escuro, responsivo)
 └── js/
-    ├── conversas.js    → persona da Lina, níveis, cenários, temas e plano B
-    ├── chave.js        → config da API (`LINA_API`) e chave local opcional
+    ├── chave.js        → configuração da API (LINA_API e a chave local opcional)
+    ├── conversas.js    → persona da Lina, níveis, cenários, temas e o modo básico
     ├── ia.js           → integração com a API (chave no servidor) + fallback
     └── app.js          → chat, voz, microfone, XP e progresso
 ```
 
-A API vive em `../functions/index.js` (Cloud Function `lina`), que chama
-Gemini/OpenRouter com a chave guardada nas secrets do Firebase.
+---
 
 ## Dicas
 
@@ -78,6 +133,14 @@ Gemini/OpenRouter com a chave guardada nas secrets do Firebase.
 - No **modo básico** (sem chave), digite assuntos como *"pedir comida"*, *"trabalho"*,
   *"viagem"*, *"como perguntar"* — a Lina responde com frases úteis.
 - Para trocar o modelo da IA, edite em ⚙️ Configurações (lista em
-  https://ai.google.dev/gemini-api/docs/models).
+  <https://ai.google.dev/gemini-api/docs/models>).
+- O histórico, o XP e o vocabulário ficam guardados **no navegador** (`localStorage`).
+  Limpar os dados do navegador apaga o progresso.
+
+---
+
+## Licença
 
 Projeto educacional livre. Textos autorais criados para fins de ensino.
+
+HTML, CSS e JavaScript são marcas registradas de seus respectivos proprietários.

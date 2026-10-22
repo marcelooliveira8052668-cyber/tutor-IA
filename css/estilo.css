@@ -284,3 +284,19 @@ body {
   #painel.aberto { display: block; }
   #msgs { padding-bottom: 20px; }
 }
+
+/* =============================================================
+   FOCO VISIVEL
+   Sem isso, quem navega pelo teclado nao ve onde esta.
+   ============================================================= */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--acento, #7c3aed);
+  outline-offset: 2px;
+  border-radius: 8px;
+}

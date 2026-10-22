@@ -512,7 +512,7 @@
 
   /* ---------------- SETUP ---------------- */
   function mostrarSetup() {
-    $("overlaySetup").hidden = false;
+    abrirJanela("overlaySetup");
     var nivelBox = $("setNiveis");
     nivelBox.innerHTML = "";
     NIVEIS.forEach(function (n) {
@@ -701,20 +701,101 @@
   }
 
   /* ---------------- EVENTOS ---------------- */
+  /* ---------------- ACESSIBILIDADE: foco, ESC e painel ---------------- */
+
+  var elementoFocado = null;
+
+  /* Guarda onde o foco estava e leva para dentro da janela aberta. */
+  function abrirJanela(idOverlay) {
+    var overlay = $(idOverlay);
+    if (!overlay) return;
+
+    if (!overlay.hidden) return;
+
+    elementoFocado = document.activeElement;
+    overlay.hidden = false;
+
+    var primeiro = overlay.querySelector(
+      "input:not([type=hidden]), select, textarea, button"
+    );
+
+    if (primeiro) {
+      setTimeout(function () { primeiro.focus(); }, 30);
+    }
+  }
+
+  /* Fecha a janela e devolve o foco para onde o usuario estava. */
+  function fecharJanela(idOverlay) {
+    var overlay = $(idOverlay);
+    if (!overlay || overlay.hidden) return;
+
+    overlay.hidden = true;
+
+    if (elementoFocado && elementoFocado.focus) {
+      elementoFocado.focus();
+      elementoFocado = null;
+    }
+  }
+
+  /* O Tab nao sai da janela aberta. */
+  function prenderFoco(evento) {
+    var overlay = document.querySelector(
+      "#overlayConfig:not([hidden]), #overlaySetup:not([hidden])"
+    );
+
+    if (!overlay) return;
+
+    var focaveis = Array.prototype.slice.call(
+      overlay.querySelectorAll(
+        "a[href], button:not([disabled]), input:not([type=hidden]), select, textarea"
+      )
+    ).filter(function (el) { return el.offsetParent !== null; });
+
+    if (!focaveis.length) return;
+
+    var primeiro = focaveis[0];
+    var ultimo = focaveis[focaveis.length - 1];
+
+    if (evento.shiftKey && document.activeElement === primeiro) {
+      evento.preventDefault();
+      ultimo.focus();
+    } else if (!evento.shiftKey && document.activeElement === ultimo) {
+      evento.preventDefault();
+      primeiro.focus();
+    }
+  }
+
+  document.addEventListener("keydown", function (evento) {
+    if (evento.key === "Escape") {
+      if (!$("overlayConfig").hidden) {
+        fecharJanela("overlayConfig");
+        return;
+      }
+      if (!$("overlaySetup").hidden) {
+        fecharJanela("overlaySetup");
+        return;
+      }
+    }
+
+    if (evento.key === "Tab") {
+      prenderFoco(evento);
+    }
+  });
+
   function ligar() {
     $("btnEnviar").onclick = function () { enviar($("entrada").value); $("entrada").value = ""; };
     $("entrada").addEventListener("keydown", function (ev) {
       if (ev.key === "Enter") { enviar($("entrada").value); $("entrada").value = ""; }
     });
     $("btnMic").onclick = iniciarMic;
-    $("btnConfig").onclick = abrirConfig;
+    $("btnConfig").onclick = function () { abrirConfig(); abrirJanela("overlayConfig"); };
     $("modoRotulo").onclick = abrirConfig;
     $("avisoIA").onclick = abrirConfig;
     $("btnSalvarCfg").onclick = salvarConfig;
     $("btnTestarChave").onclick = testarChave;
-    $("btnFechaCfg").onclick = function () { $("overlayConfig").hidden = true; };
+    $("btnFechaCfg").onclick = function () { fecharJanela("overlayConfig"); };
     $("overlayConfig").addEventListener("click", function (ev) {
-      if (ev.target === this) this.hidden = true;
+      if (ev.target === this) fecharJanela("overlayConfig");
     });
     $("btnZerar").onclick = zerarTudo;
     $("btnLimparChat").onclick = function () {
@@ -733,7 +814,11 @@
       if (ev.key === "Enter") iniciar();
     });
     $("btnFechaPainel").onclick = function () { $("painel").classList.remove("aberto"); };
-    $("btnPainel").onclick = function () { $("painel").classList.toggle("aberto"); };
+    $("btnPainel").setAttribute("aria-expanded", "false");
+    $("btnPainel").onclick = function () {
+      var aberto = $("painel").classList.toggle("aberto");
+      $("btnPainel").setAttribute("aria-expanded", aberto ? "true" : "false");
+    };
     $("btnImersao").onclick = function () {
       perfil.imersao = !perfil.imersao;
       salvarPerfil();

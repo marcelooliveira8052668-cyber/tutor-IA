@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' file: data:; script-src 'self' file: 'unsafe-inline'; style-src 'self' file: 'unsafe-inline'; img-src 'self' file: data:; connect-src 'self' https://generativelanguage.googleapis.com https://openrouter.ai; media-src 'self' blob: file: data:; font-src 'self' file:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>Lina — Tutor de Inglês com IA</title>
 <link rel="stylesheet" href="css/estilo.css">
@@ -18,33 +18,33 @@
       <span class="badge" id="nivelBadge" title="Nível atual">A1</span>
       <span class="badge" id="streakBadge" title="Dias seguidos">&#128293; <span id="streakVal">0</span></span>
       <span class="badge" id="xpBadge" title="Pontos de aprendizado">&#11088; <span id="xpVal">0</span></span>
-      <button class="btnIcone" id="btnPainel" type="button" title="Cenários e aulas">&#128218;</button>
-      <button class="btnIcone" id="btnTema" type="button" title="Tema claro/escuro">&#9788;</button>
-      <button class="btnIcone" id="btnConfig" type="button" title="Configurações">&#9881;</button>
+      <button class="btnIcone" id="btnPainel" type="button" title="Cenários e aulas" aria-label="Abrir painel de cenários e aulas" aria-expanded="false" aria-controls="painel">&#128218;</button>
+      <button class="btnIcone" id="btnTema" type="button" title="Tema claro/escuro" aria-label="Alternar tema claro e escuro">&#9788;</button>
+      <button class="btnIcone" id="btnConfig" type="button" title="Configurações" aria-label="Abrir configurações">&#9881;</button>
     </div>
   </header>
   <div id="barraNivel"><div id="barraNivelPre"><span id="barraNivelRot"></span></div></div>
 
   <!-- ===== CHAT ===== -->
   <main id="chat">
-    <div id="msgs"></div>
+    <div id="msgs" role="log" aria-live="polite" aria-relevant="additions" aria-label="Conversa com a Lina"></div>
     <div id="digBar">
       <div class="inputLinha">
-        <select id="micLang" title="Idioma do microfone (o que você vai falar)">
+        <select id="micLang" title="Idioma do microfone (o que você vai falar)" aria-label="Idioma do microfone">
           <option value="pt-BR">&#127463;&#127479; PT</option>
           <option value="en-US" selected>&#127482;&#127480; EN</option>
         </select>
-        <button class="btnMic" id="btnMic" type="button" title="Falar (use microfone)">&#127908;</button>
-        <input id="entrada" type="text" autocomplete="off" placeholder="Escreva em português ou inglês...">
-        <button class="btnEnviar" id="btnEnviar" type="button" title="Enviar">&#10148;</button>
+        <button class="btnMic" id="btnMic" type="button" title="Falar (use microfone)" aria-label="Falar usando o microfone">&#127908;</button>
+        <input id="entrada" type="text" autocomplete="off" placeholder="Escreva em português ou inglês..." aria-label="Sua mensagem para a Lina">
+        <button class="btnEnviar" id="btnEnviar" type="button" title="Enviar" aria-label="Enviar mensagem">&#10148;</button>
       </div>
       <div id="chipsLinha"><button class="rotuloChip" id="modoRotulo" type="button" title="Modo atual">&#9999;&#65039; Aula</button><div id="chips"></div></div>
     </div>
   </main>
 
   <!-- ===== PAINEL DA LINA ===== -->
-  <aside id="painel">
-    <button id="avisoIA" type="button" class="avisoIA" hidden>
+  <aside id="painel" role="complementary" aria-label="Painel da Lina: cenários, aulas e vocabulário">
+    <button id="avisoIA" type="button" class="avisoIA" hidden aria-label="Ativar a IA de verdade">
       <b>&#128268; Ativar IA de verdade</b>
       <small>Cole sua chave grátis aqui (1 min por aparelho)</small>
     </button>
@@ -67,9 +67,9 @@
   </aside>
 
   <!-- ===== MODAL CONFIG ===== -->
-  <div id="overlayConfig" hidden>
+  <div id="overlayConfig" role="dialog" aria-modal="true" aria-labelledby="tituloConfig" hidden>
     <div id="modalConfig">
-      <h2>&#9881; Configurações</h2>
+      <h2 id="tituloConfig">&#9881; Configurações</h2>
 
       <div id="cfgCampos" hidden>
         <label class="campo">
@@ -99,20 +99,20 @@
       </div>
 
       <div id="cfgStatus" class="cfgStatus"></div>
-      <button class="btnFechar" id="btnFechaCfg" type="button">Fechar</button>
+      <button class="btnFechar" id="btnFechaCfg" type="button" aria-label="Fechar configurações">Fechar</button>
     </div>
   </div>
 
   <!-- ===== MODAL SETUP (primeira vez) ===== -->
-  <div id="overlaySetup" hidden>
+  <div id="overlaySetup" role="dialog" aria-modal="true" aria-labelledby="tituloSetup" hidden>
     <div id="modalSetup">
       <div id="linaSetupFace">&#128105;&#8205;&#127979;</div>
-      <h2>Oi! Eu sou a <b>Lina</b></h2>
+      <h2 id="tituloSetup">Oi! Eu sou a <b>Lina</b></h2>
       <p id="setupIntro">Suas aulas particulares de inglês, do zero à fluência — falando como nativos falam. Deixa eu te conhecer para ensinar do seu jeito.</p>
 
       <label class="campo">
         <span>Como você se chama?</span>
-        <input id="setNome" type="text" placeholder="Seu nome" maxlength="24">
+        <input id="setNome" type="text" placeholder="Seu nome" maxlength="24" aria-label="Seu nome" autocomplete="given-name">
       </label>
 
       <div class="rotuloSecao">Seu nível hoje</div>
@@ -127,7 +127,7 @@
   </div>
 
   <!-- ===== AVISOS ===== -->
-  <div id="toast" hidden></div>
+  <div id="toast" role="status" aria-live="polite" hidden></div>
   <div id="pulsando" hidden>
     <div class="decor"></div>
     <span>Lina está pensando...</span>
